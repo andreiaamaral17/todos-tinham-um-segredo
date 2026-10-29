@@ -7,81 +7,144 @@
 <title>Todos Tinham um Segredo</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;min-height:100vh;padding:28px 20px;
-  background:radial-gradient(ellipse at top,#33202b,#110e13 70%);
-  color:#f4e3db;font-family:Georgia,serif;
-  display:grid;place-items:center
-}
-main{width:100%;max-width:490px;text-align:center}
-.eyebrow{
-  color:#c88a83;letter-spacing:3px;
-  font:11px Arial,sans-serif
-}
-h1{font-size:clamp(39px,9vw,62px);line-height:1.1;margin:28px 0 14px}
-.subtitle{color:#d5a39c;font-style:italic;font-size:19px}
-.line{height:1px;background:#65424c;margin:32px 0}
-.card{
-  background:#251b25;border:1px solid #72505a;
-  border-radius:18px;padding:28px 22px
-}
-h2{font-size:23px;margin:0 0 12px}
+body{margin:0;min-height:100vh;padding:25px 18px;background:radial-gradient(ellipse at top,#39202c,#100d12 75%);color:#f3e0d8;font-family:Georgia,serif;display:grid;place-items:center}
+main{max-width:520px;width:100%;text-align:center}
+.eyebrow{font:11px Arial,sans-serif;letter-spacing:3px;color:#c99591}
+h1{font-size:clamp(39px,9vw,65px);line-height:1.08;margin:28px 0 12px}
+.subtitle{font-size:19px;font-style:italic;color:#dfaaa4}
+.rule{height:1px;background:#66424b;margin:30px 0}
+.card{border:1px solid #73515c;background:#251b25;border-radius:17px;padding:28px 21px}
+h2{font-size:22px}
 p{line-height:1.6}
-label{
-  display:block;text-align:left;margin:22px 0 9px;
-  font:12px Arial,sans-serif;letter-spacing:2px;
-  color:#e3bcb4
-}
-input{
-  width:100%;padding:16px;border-radius:9px;
-  border:1px solid #77535f;background:#130f15;
-  color:white;font-size:17px;text-align:center;
-  letter-spacing:3px
-}
-button{
-  width:100%;margin-top:15px;padding:17px;
-  background:#a4535d;color:white;border:0;
-  border-radius:9px;font:bold 14px Arial,sans-serif;
-  letter-spacing:2px;cursor:pointer
-}
-button:hover{background:#bd6973}
-.note{font:12px/1.6 Arial,sans-serif;color:#bda5a8}
-#message{min-height:22px;color:#e6b0aa;font:14px Arial,sans-serif}
-footer{margin-top:32px;color:#ad9097;font:11px Arial,sans-serif;letter-spacing:2px}
+label{display:block;text-align:left;margin:22px 0 9px;font:12px Arial,sans-serif;letter-spacing:1.5px;color:#e0b9b3}
+input{width:100%;padding:15px;border-radius:8px;border:1px solid #77535f;background:#130f15;color:#fff;font-size:16px;text-align:center}
+button{width:100%;margin-top:15px;padding:17px;background:#a4535d;color:#fff;border:0;border-radius:9px;font:bold 14px Arial,sans-serif;letter-spacing:1.5px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.note{font:12px/1.6 Arial,sans-serif;color:#c3a6ab}
+#message{min-height:20px;font:14px/1.5 Arial,sans-serif;color:#efc0b9}
+#character{text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}
+footer{margin-top:28px;color:#aa8d95;font:11px Arial,sans-serif;letter-spacing:2px}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <main>
-  <div class="eyebrow">A HALLOWEEN MURDER MYSTERY</div>
-  <h1>Todos Tinham<br>um Segredo.</h1>
-  <p class="subtitle">Some secrets are worth killing for.</p>
-  <div class="line"></div>
-  <section class="card">
-    <h2>IDENTIDADE CONFIDENCIAL</h2>
-    <p>Onze convidados.<br>Uma morte.<br>Segredos que ninguém deveria conhecer.</p>
-    <p><strong>Estás preparado para descobrir a verdade?</strong></p>
-    <form id="accessForm">
-      <label for="accessCode">O TEU CÓDIGO PESSOAL</label>
-      <input id="accessCode" type="text"
-        placeholder="••••••••" autocomplete="off"
-        autocapitalize="characters" spellcheck="false"
-        maxlength="32" required>
-      <button type="submit">REVELAR IDENTIDADE</button>
-    </form>
-    <p id="message" aria-live="polite"></p>
-    <p class="note">O teu código será entregue em privado.<br>
-    Não partilhes a tua identidade.</p>
-  </section>
-  <footer>CONFIDENTIAL · TRUST NO ONE</footer>
+<div class="eyebrow">A HALLOWEEN MURDER MYSTERY</div>
+<h1>Todos Tinham<br>um Segredo.</h1>
+<p class="subtitle">Some secrets are worth killing for.</p>
+<div class="rule"></div>
+
+<section class="card" id="login">
+<h2>IDENTIDADE CONFIDENCIAL</h2>
+<p>Onze convidados. Uma morte.<br>Segredos que ninguém deveria conhecer.</p>
+<form id="accessForm">
+<label for="accessCode">O TEU CÓDIGO PESSOAL</label>
+<input id="accessCode" type="text"
+placeholder="Introduz o código recebido"
+autocomplete="off" autocapitalize="off"
+spellcheck="false" required>
+<button id="enter" type="submit">REVELAR IDENTIDADE</button>
+</form>
+<p id="message" role="status" aria-live="polite"></p>
+<p class="note">O teu código será entregue em privado. Não o partilhes.</p>
+</section>
+
+<section class="card" id="profile" hidden>
+<h2>A TUA IDENTIDADE</h2>
+<div id="character"></div>
+<button id="leave" type="button">FECHAR FICHA</button>
+</section>
+
+<footer>CONFIDENTIAL · TRUST NO ONE</footer>
 </main>
+
 <script>
-document.getElementById("accessForm")
-  .addEventListener("submit",function(event){
-    event.preventDefault();
-    document.getElementById("message").textContent =
-      "O acesso às personagens ainda não está ativo. Em breve.";
-    document.getElementById("accessCode").value = "";
-  });
+'use strict';
+
+const $ = id => document.getElementById(id);
+
+function fromB64(s) {
+  return Uint8Array.from(atob(s), c => c.charCodeAt(0));
+}
+
+async function unlock(code, record) {
+  const enc = new TextEncoder();
+  const material = await crypto.subtle.importKey(
+    'raw', enc.encode(code), 'PBKDF2', false, ['deriveKey']
+  );
+  const key = await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: fromB64(record.salt),
+      iterations: 310000,
+      hash: 'SHA-256'
+    },
+    material,
+    {name: 'AES-GCM', length: 256},
+    false,
+    ['decrypt']
+  );
+  const clear = await crypto.subtle.decrypt(
+    {name: 'AES-GCM', iv: fromB64(record.iv)},
+    key,
+    fromB64(record.ciphertext)
+  );
+  return new TextDecoder().decode(clear);
+}
+
+$('accessForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  $('message').textContent = 'A verificar o código…';
+  $('enter').disabled = true;
+  const code = $('accessCode').value.trim();
+
+  try {
+    const response = await fetch('./personagens.json', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) throw Error('not-ready');
+
+    const records = await response.json();
+    if (!Array.isArray(records)) throw Error('invalid');
+
+    let found = null;
+    for (const record of records) {
+      try {
+        found = await unlock(code, record);
+        break;
+      } catch (e) {
+        // Este código não corresponde a esta ficha.
+      }
+    }
+
+    if (found === null) {
+      $('message').textContent =
+        'Código não reconhecido. Confirma o código recebido.';
+      return;
+    }
+
+    $('character').textContent = found;
+    $('login').hidden = true;
+    $('profile').hidden = false;
+
+  } catch (error) {
+    $('message').textContent =
+      error.message === 'not-ready'
+      ? 'As fichas ainda não foram publicadas.'
+      : 'Não foi possível abrir as fichas. Tenta novamente.';
+  } finally {
+    $('accessCode').value = '';
+    $('enter').disabled = false;
+  }
+});
+
+$('leave').addEventListener('click', () => {
+  $('character').textContent = '';
+  $('profile').hidden = true;
+  $('login').hidden = false;
+  $('message').textContent = '';
+});
 </script>
 </body>
 </html>
