@@ -2,79 +2,86 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Todos Tinham um Segredo</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #130f14;
-      color: #f3dfd4;
-      font-family: Georgia, serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    main {
-      width: 100%;
-      max-width: 540px;
-      text-align: center;
-    }
-    .eyebrow {
-      color: #c78379;
-      font: 12px Arial, sans-serif;
-      letter-spacing: 4px;
-    }
-    h1 {
-      font-size: clamp(42px, 9vw, 70px);
-      line-height: 1.08;
-      margin: 35px 0 15px;
-    }
-    .subtitle {
-      color: #dca69b;
-      font-style: italic;
-      font-size: 20px;
-    }
-    .divider {
-      height: 1px;
-      background: #654047;
-      margin: 35px 0;
-    }
-    .panel {
-      background: #251b25;
-      border: 1px solid #60414a;
-      border-radius: 16px;
-      padding: 28px 20px;
-    }
-    .panel p {
-      font: 16px/1.7 Arial, sans-serif;
-    }
-    .small {
-      color: #c9a9a5;
-      font: 12px Arial, sans-serif;
-      letter-spacing: 2px;
-      margin-top: 30px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Todos Tinham um Segredo</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;padding:28px 20px;
+  background:radial-gradient(ellipse at top,#33202b,#110e13 70%);
+  color:#f4e3db;font-family:Georgia,serif;
+  display:grid;place-items:center
+}
+main{width:100%;max-width:490px;text-align:center}
+.eyebrow{
+  color:#c88a83;letter-spacing:3px;
+  font:11px Arial,sans-serif
+}
+h1{font-size:clamp(39px,9vw,62px);line-height:1.1;margin:28px 0 14px}
+.subtitle{color:#d5a39c;font-style:italic;font-size:19px}
+.line{height:1px;background:#65424c;margin:32px 0}
+.card{
+  background:#251b25;border:1px solid #72505a;
+  border-radius:18px;padding:28px 22px
+}
+h2{font-size:23px;margin:0 0 12px}
+p{line-height:1.6}
+label{
+  display:block;text-align:left;margin:22px 0 9px;
+  font:12px Arial,sans-serif;letter-spacing:2px;
+  color:#e3bcb4
+}
+input{
+  width:100%;padding:16px;border-radius:9px;
+  border:1px solid #77535f;background:#130f15;
+  color:white;font-size:17px;text-align:center;
+  letter-spacing:3px
+}
+button{
+  width:100%;margin-top:15px;padding:17px;
+  background:#a4535d;color:white;border:0;
+  border-radius:9px;font:bold 14px Arial,sans-serif;
+  letter-spacing:2px;cursor:pointer
+}
+button:hover{background:#bd6973}
+.note{font:12px/1.6 Arial,sans-serif;color:#bda5a8}
+#message{min-height:22px;color:#e6b0aa;font:14px Arial,sans-serif}
+footer{margin-top:32px;color:#ad9097;font:11px Arial,sans-serif;letter-spacing:2px}
+</style>
 </head>
 <body>
-  <main>
-    <div class="eyebrow">A HALLOWEEN MURDER MYSTERY</div>
-    <h1>Todos Tinham<br>um Segredo.</h1>
-    <p class="subtitle">Some secrets are worth killing for.</p>
-    <div class="divider"></div>
-    <div class="panel">
-      <h2>THE DINNER PARTY</h2>
-      <p>11 suspects. One victim. One killer.</p>
-      <p>Uma noite entre amigos.<br>
-      Segredos que nunca deveriam ser revelados.<br>
-      E um crime que mudará tudo.</p>
-      <p><strong>Trust no one.</strong></p>
-    </div>
-    <div class="small">CONFIDENTIAL · ACCESS COMING SOON</div>
-  </main>
+<main>
+  <div class="eyebrow">A HALLOWEEN MURDER MYSTERY</div>
+  <h1>Todos Tinham<br>um Segredo.</h1>
+  <p class="subtitle">Some secrets are worth killing for.</p>
+  <div class="line"></div>
+  <section class="card">
+    <h2>IDENTIDADE CONFIDENCIAL</h2>
+    <p>Onze convidados.<br>Uma morte.<br>Segredos que ninguém deveria conhecer.</p>
+    <p><strong>Estás preparado para descobrir a verdade?</strong></p>
+    <form id="accessForm">
+      <label for="accessCode">O TEU CÓDIGO PESSOAL</label>
+      <input id="accessCode" type="text"
+        placeholder="••••••••" autocomplete="off"
+        autocapitalize="characters" spellcheck="false"
+        maxlength="32" required>
+      <button type="submit">REVELAR IDENTIDADE</button>
+    </form>
+    <p id="message" aria-live="polite"></p>
+    <p class="note">O teu código será entregue em privado.<br>
+    Não partilhes a tua identidade.</p>
+  </section>
+  <footer>CONFIDENTIAL · TRUST NO ONE</footer>
+</main>
+<script>
+document.getElementById("accessForm")
+  .addEventListener("submit",function(event){
+    event.preventDefault();
+    document.getElementById("message").textContent =
+      "O acesso às personagens ainda não está ativo. Em breve.";
+    document.getElementById("accessCode").value = "";
+  });
+</script>
 </body>
 </html>
