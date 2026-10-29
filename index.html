@@ -52,6 +52,140 @@ spellcheck="false" required>
 <section class="card" id="profile" hidden>
 <h2>A TUA IDENTIDADE</h2>
 <div id="character"></div>
+
+<div class="rule"></div>
+<h2>O MISTÉRIO CONTINUA</h2>
+<p>Introduz o código anunciado para desbloquear
+a próxima ronda.</p>
+
+<form id="roundForm">
+  <label for="roundNumber">RONDA</label>
+  <select id="roundNumber" required
+    style="width:100%;padding:15px;background:#130f15;
+    color:white;border:1px solid #77535f;border-radius:8px">
+    <option value="1">1 — O Último Convite</option>
+    <option value="2">2 — Ninguém É Inocente</option>
+    <option value="3">3 — A Hora da Verdade</option>
+    <option value="4">4 — O Último Segredo</option>
+  </select>
+
+  <label for="roundCode">CÓDIGO DA RONDA</label>
+  <input id="roundCode" type="text"
+    autocomplete="off" autocapitalize="off"
+    spellcheck="false" required>
+
+  <button id="roundEnter" type="submit">
+    DESBLOQUEAR RONDA
+  </button>
+</form>
+
+<p id="roundMessage" role="status" aria-live="polite"></p>
+<div id="roundContent"
+  style="white-space:pre-wrap;text-align:left;line-height:1.7">
+</div>
+```
+ 
+### 2. Guardar temporariamente o código pessoal
+
+Na parte inferior do ficheiro, procura:
+
+```javascript
+const $ = id => document.getElementById(id);
+```
+
+Logo a seguir, acrescenta:
+
+```javascript
+let activeCode = null;
+```
+
+Depois, procura:
+
+```javascript
+$('character').textContent = found;
+```
+
+E acrescenta imediatamente a seguir:
+
+```javascript
+activeCode = code;
+```
+
+### 3. Adicionar o desbloqueio das rondas
+
+Ainda no mesmo ficheiro, procura a linha:
+
+```html
+</script>
+```
+
+**Imediatamente antes dela**, cola este código:
+
+<CodeBlock language="javascript" editable>
+$('roundForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const number = Number($('roundNumber').value);
+  const roundCode = $('roundCode').value.trim();
+  const button = $('roundEnter');
+
+  $('roundMessage').textContent = 'A verificar a ronda…';
+  $('roundContent').textContent = '';
+  button.disabled = true;
+
+  try {
+    if (!activeCode) throw Error('session');
+
+    const response = await fetch('./rondas.json', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) throw Error('not-ready');
+
+    const rounds = await response.json();
+    if (!Array.isArray(rounds)) throw Error('invalid');
+
+    const round = rounds.find(r => r.number === number);
+    if (!round || !Array.isArray(round.records)) {
+      throw Error('not-ready');
+    }
+
+    const combinedKey = activeCode + ':' + roundCode;
+    let content = null;
+
+    for (const record of round.records) {
+      try {
+        content = await unlock(combinedKey, record);
+        break;
+      } catch (error) {
+        // A chave não corresponde a esta pista.
+      }
+    }
+
+    if (content === null) throw Error('wrong-code');
+
+    $('roundContent').textContent = content;
+    $('roundMessage').textContent =
+      'Ronda desbloqueada com sucesso.';
+
+  } catch (error) {
+    $('roundMessage').textContent =
+      error.message === 'not-ready'
+        ? 'Esta ronda ainda não foi publicada.'
+        : error.message === 'wrong-code'
+        ? 'Código incorreto para esta ronda.'
+        : 'Não foi possível abrir a ronda.';
+  } finally {
+    $('roundCode').value = '';
+    button.disabled = false;
+  }
+});
+
+$('leave').addEventListener('click', () => {
+  activeCode = null;
+  $('roundContent').textContent = '';
+  $('roundMessage').textContent = '';
+});
 <button id="leave" type="button">FECHAR FICHA</button>
 </section>
 
